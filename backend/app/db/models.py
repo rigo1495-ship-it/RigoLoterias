@@ -20,7 +20,9 @@ from app.db.base import Base
 
 
 class TimestampMixin:
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow
+    )
 
 
 class Game(Base, TimestampMixin):
@@ -77,7 +79,9 @@ class HistoricalImport(Base, TimestampMixin):
 class ImportRowError(Base, TimestampMixin):
     __tablename__ = "import_row_errors"
     id: Mapped[int] = mapped_column(primary_key=True)
-    import_id: Mapped[int] = mapped_column(ForeignKey("historical_imports.id"), index=True)
+    import_id: Mapped[int] = mapped_column(
+        ForeignKey("historical_imports.id"), index=True
+    )
     row_number: Mapped[int] = mapped_column(Integer)
     message: Mapped[str] = mapped_column(Text)
     raw_payload: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
@@ -120,7 +124,9 @@ class BacktestRun(Base, JsonRunMixin):
 class BacktestStep(Base, TimestampMixin):
     __tablename__ = "backtest_steps"
     id: Mapped[int] = mapped_column(primary_key=True)
-    backtest_run_id: Mapped[int] = mapped_column(ForeignKey("backtest_runs.id"), index=True)
+    backtest_run_id: Mapped[int] = mapped_column(
+        ForeignKey("backtest_runs.id"), index=True
+    )
     target_draw_id: Mapped[int] = mapped_column(ForeignKey("draws.id"))
     history_end_draw_id: Mapped[int | None] = mapped_column(ForeignKey("draws.id"))
     result_json: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
@@ -139,7 +145,9 @@ class GeneratedPortfolio(Base, TimestampMixin):
 class GeneratedTicket(Base, TimestampMixin):
     __tablename__ = "generated_tickets"
     id: Mapped[int] = mapped_column(primary_key=True)
-    portfolio_id: Mapped[int] = mapped_column(ForeignKey("generated_portfolios.id"), index=True)
+    portfolio_id: Mapped[int] = mapped_column(
+        ForeignKey("generated_portfolios.id"), index=True
+    )
     payload_json: Mapped[dict[str, Any]] = mapped_column(JSON)
     heuristic_score: Mapped[float | None] = mapped_column(Float)
     model_score: Mapped[float | None] = mapped_column(Float)
@@ -183,5 +191,24 @@ class TrisDrawResultModel(Base, TimestampMixin):
     source: Mapped[str] = mapped_column(Text, default="manual")
     verified: Mapped[bool] = mapped_column(Boolean, default=False)
     __table_args__ = (
-        CheckConstraint("length(winning_number) = 5", name="ck_tris_winning_number_length"),
+        CheckConstraint(
+            "length(winning_number) = 5", name="ck_tris_winning_number_length"
+        ),
+    )
+
+
+class CombinationDrawResultModel(Base, TimestampMixin):
+    __tablename__ = "combination_draw_results"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    game_slug: Mapped[str] = mapped_column(String(64), index=True)
+    draw_number: Mapped[str] = mapped_column(String(128))
+    draw_date: Mapped[date] = mapped_column(Date, index=True)
+    natural_numbers_json: Mapped[list[int]] = mapped_column(JSON)
+    additional_numbers_json: Mapped[list[int]] = mapped_column(JSON)
+    source: Mapped[str] = mapped_column(Text)
+    source_hash: Mapped[str] = mapped_column(String(64), index=True)
+    parser_version: Mapped[str] = mapped_column(String(64))
+    rule_version: Mapped[str] = mapped_column(String(64))
+    __table_args__ = (
+        Index("uq_combination_game_draw", "game_slug", "draw_number", unique=True),
     )

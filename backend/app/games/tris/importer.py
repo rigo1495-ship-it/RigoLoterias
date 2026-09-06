@@ -29,22 +29,31 @@ class TrisHistoricalImporter:
         duplicates: list[str] = []
         for line, row in enumerate(rows, 2):
             try:
-                draw_number = str(row.get("draw_id") or row.get("CONCURSO") or "").strip()
+                draw_number = str(
+                    row.get("draw_id") or row.get("CONCURSO") or ""
+                ).strip()
                 if not draw_number:
                     raise ValueError("Missing draw number.")
                 number = row.get("winning_number")
                 if number is None:
-                    number = "".join(str(row.get(f"R{i}", "")).strip() for i in range(1, 6))
+                    number = "".join(
+                        str(row.get(f"R{i}", "")).strip() for i in range(1, 6)
+                    )
                 draw = TrisDrawResult(
                     draw_number=draw_number,
-                    draw_date=date.fromisoformat(str(row.get("draw_date") or row.get("FECHA"))),
+                    draw_date=date.fromisoformat(
+                        str(row.get("draw_date") or row.get("FECHA"))
+                    ),
                     draw_time=(
-                        time.fromisoformat(row["draw_time"]) if row.get("draw_time") else None
+                        time.fromisoformat(row["draw_time"])
+                        if row.get("draw_time")
+                        else None
                     ),
                     draw_name=str(row.get("draw_name") or "Sin horario"),
                     winning_number=str(number).strip(),
                     source=str(row.get("source") or "csv"),
-                    verified=str(row.get("verified", "")).lower() in {"1", "true", "si", "sí"},
+                    verified=str(row.get("verified", "")).lower()
+                    in {"1", "true", "si", "sí"},
                 )
                 if draw_number in seen:
                     duplicates.append(draw_number)

@@ -29,7 +29,9 @@ def upgrade() -> None:
         sa.Column("source", sa.Text(), nullable=False),
         sa.Column("verified", sa.Boolean(), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
-        sa.CheckConstraint("length(winning_number) = 5", name="ck_tris_winning_number_length"),
+        sa.CheckConstraint(
+            "length(winning_number) = 5", name="ck_tris_winning_number_length"
+        ),
         sa.UniqueConstraint("draw_number"),
     )
     op.create_index(
@@ -38,7 +40,9 @@ def upgrade() -> None:
         ["draw_number"],
         unique=True,
     )
-    op.create_index("ix_tris_draw_results_draw_date", "tris_draw_results", ["draw_date"])
+    op.create_index(
+        "ix_tris_draw_results_draw_date", "tris_draw_results", ["draw_date"]
+    )
 
 
 def downgrade() -> None:

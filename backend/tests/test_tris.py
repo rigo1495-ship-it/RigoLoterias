@@ -48,7 +48,11 @@ def test_economic_fields_are_unavailable_without_verified_rule() -> None:
         TrisDrawResult("1", date(2026, 1, 1), "00508"),
         TrisTicket(TrisModality.DIRECTA_5, "00508", Decimal("10")),
     )
-    assert result["matched"] is True and result["gross_prize"] is None and result["roi"] is None
+    assert (
+        result["matched"] is True
+        and result["gross_prize"] is None
+        and result["roi"] is None
+    )
 
 
 def test_importer_reports_errors_duplicates_and_hash() -> None:
@@ -84,7 +88,9 @@ def test_random_generation_matches_master_golden_value() -> None:
 def test_backtest_is_reproducible_and_has_no_lookahead() -> None:
     draws = history()
     first = walk_forward_backtest(draws, train_size=10, ticket_count=3, seed=7)
-    changed = draws[:-1] + [TrisDrawResult(draws[-1].draw_number, draws[-1].draw_date, "99999")]
+    changed = draws[:-1] + [
+        TrisDrawResult(draws[-1].draw_number, draws[-1].draw_date, "99999")
+    ]
     second = walk_forward_backtest(changed, train_size=10, ticket_count=3, seed=7)
     assert first["steps"][:-1] == second["steps"][:-1]
     assert first["steps"][0]["history_end_draw_number"] == "9"

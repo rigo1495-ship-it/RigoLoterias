@@ -6,7 +6,7 @@ module = GameModule(
         "melate_retro",
         "Melate Retro",
         "combination",
-        GameStatus.PLANNED,
+        GameStatus.AVAILABLE,
         frozenset(
             {
                 C.HISTORY,

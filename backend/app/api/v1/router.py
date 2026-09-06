@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
+from app.api.v1.combination import router as combination_router
 from app.api.v1.tris import router as tris_router
 from app.domain.games import Capability
 from app.games import registry
@@ -7,6 +8,7 @@ from app.schemas.games import CapabilityErrorResponse, GameResponse
 
 router = APIRouter()
 router.include_router(tris_router)
+router.include_router(combination_router)
 
 
 @router.get("/health")
@@ -16,7 +18,9 @@ def health() -> dict[str, str]:
 
 @router.get("/games", response_model=list[GameResponse])
 def games() -> list[GameResponse]:
-    return [GameResponse.from_definition(module.definition) for module in registry.all()]
+    return [
+        GameResponse.from_definition(module.definition) for module in registry.all()
+    ]
 
 
 @router.get("/games/{game}", response_model=GameResponse)
