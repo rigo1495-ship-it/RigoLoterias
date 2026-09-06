@@ -20,16 +20,9 @@ def positional_statistics(
         delays[position] = {}
         intervals[position] = {}
         for digit in "0123456789":
-            appearances = [
-                i for i, number in enumerate(numbers) if number[index] == digit
-            ]
-            gaps = [
-                right - left
-                for left, right in zip(appearances, appearances[1:], strict=False)
-            ]
-            delays[position][digit] = (
-                len(numbers) - 1 - appearances[-1] if appearances else None
-            )
+            appearances = [i for i, number in enumerate(numbers) if number[index] == digit]
+            gaps = [right - left for left, right in zip(appearances, appearances[1:], strict=False)]
+            delays[position][digit] = len(numbers) - 1 - appearances[-1] if appearances else None
             intervals[position][digit] = {
                 "appearances": len(appearances),
                 "mean": mean(gaps) if gaps else None,
@@ -41,13 +34,9 @@ def positional_statistics(
         matrix: dict[str, Counter[str]] = defaultdict(Counter)
         for previous, current in zip(numbers, numbers[1:], strict=False):
             matrix[previous[index]][current[index]] += 1
-        transitions[position] = {
-            digit: dict(counts) for digit, counts in matrix.items()
-        }
+        transitions[position] = {digit: dict(counts) for digit, counts in matrix.items()}
     pair_counts = {
-        f"{POSITIONS[i]}-{POSITIONS[j]}": dict(
-            Counter(number[i] + number[j] for number in numbers)
-        )
+        f"{POSITIONS[i]}-{POSITIONS[j]}": dict(Counter(number[i] + number[j] for number in numbers))
         for i in range(5)
         for j in range(i + 1, 5)
     }
@@ -63,10 +52,7 @@ def positional_statistics(
             for i in range(1, len(numbers))
         ],
         "adjacent_consecutive": sum(
-            any(
-                abs(int(a) - int(b)) == 1
-                for a, b in zip(number, number[1:], strict=False)
-            )
+            any(abs(int(a) - int(b)) == 1 for a, b in zip(number, number[1:], strict=False))
             for number in numbers
         ),
     }

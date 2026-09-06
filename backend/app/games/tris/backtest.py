@@ -17,12 +17,8 @@ def walk_forward_backtest(
     baseline_hits = analytic_hits = winning_draws = 0
     for target_index in range(train_size, len(ordered)):
         history, target = ordered[:target_index], ordered[target_index]
-        analytic = generate_portfolio(
-            history, ticket_count, strategy, seed + target_index
-        )
-        baseline = generate_portfolio(
-            history, ticket_count, "random", seed + target_index
-        )
+        analytic = generate_portfolio(history, ticket_count, strategy, seed + target_index)
+        baseline = generate_portfolio(history, ticket_count, "random", seed + target_index)
         hits = int(target.winning_number in analytic.tickets)
         base_hits = int(target.winning_number in baseline.tickets)
         analytic_hits += hits

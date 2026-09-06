@@ -39,9 +39,7 @@ class StrategyScorer(Protocol):
 
 @runtime_checkable
 class TicketGenerator(Protocol):
-    def generate(
-        self, request: object, *, random_seed: int | None = None
-    ) -> object: ...
+    def generate(self, request: object, *, random_seed: int | None = None) -> object: ...
 
 
 @runtime_checkable
