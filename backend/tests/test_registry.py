@@ -19,6 +19,8 @@ def test_registry_statuses_and_capabilities_are_valid() -> None:
             "melate_retro",
             "chispazo",
             "gana_gato",
+            "progol",
+            "progol_media_semana",
         }:
             assert module.definition.status is GameStatus.AVAILABLE
         else:

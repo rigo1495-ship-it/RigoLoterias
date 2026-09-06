@@ -212,3 +212,18 @@ class GanaGatoDrawResultModel(Base, TimestampMixin):
     source_hash: Mapped[str] = mapped_column(String(64), index=True)
     parser_version: Mapped[str] = mapped_column(String(64))
     rule_version: Mapped[str] = mapped_column(String(64))
+
+
+class PoolContestResultModel(Base, TimestampMixin):
+    __tablename__ = "pool_contest_results"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    game_slug: Mapped[str] = mapped_column(String(64), index=True)
+    contest_number: Mapped[str] = mapped_column(String(128))
+    contest_date: Mapped[date] = mapped_column(Date, index=True)
+    outcomes_json: Mapped[list[str]] = mapped_column(JSON)
+    revancha_outcomes_json: Mapped[list[str]] = mapped_column(JSON, default=list)
+    source: Mapped[str] = mapped_column(Text)
+    source_hash: Mapped[str] = mapped_column(String(64), index=True)
+    parser_version: Mapped[str] = mapped_column(String(64))
+    rule_version: Mapped[str] = mapped_column(String(64))
+    __table_args__ = (Index("uq_pool_game_contest", "game_slug", "contest_number", unique=True),)

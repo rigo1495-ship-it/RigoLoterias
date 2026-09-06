@@ -6,7 +6,17 @@ module = GameModule(
         "progol_media_semana",
         "Progol Media Semana",
         "pool",
-        GameStatus.PLANNED,
-        frozenset(C),
+        GameStatus.AVAILABLE,
+        frozenset(
+            {
+                C.HISTORY,
+                C.STATISTICS,
+                C.ANALYSIS,
+                C.GENERATION,
+                C.BACKTESTING,
+                C.SIMULATION,
+                C.SETTLEMENT,
+            }
+        ),
     )
 )

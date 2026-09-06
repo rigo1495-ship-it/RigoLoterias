@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 
 from app.api.v1.combination import router as combination_router
 from app.api.v1.gana_gato import router as gana_gato_router
+from app.api.v1.pool import router as pool_router
 from app.api.v1.tris import router as tris_router
 from app.domain.games import Capability
 from app.games import registry
@@ -10,6 +11,7 @@ from app.schemas.games import CapabilityErrorResponse, GameResponse
 router = APIRouter()
 router.include_router(tris_router)
 router.include_router(gana_gato_router)
+router.include_router(pool_router)
 router.include_router(combination_router)
 
 

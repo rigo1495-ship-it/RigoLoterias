@@ -19,6 +19,7 @@ def test_baseline_migration_creates_canonical_schema(tmp_path: Path) -> None:
     assert {"games", "draws", "backtest_runs", "audit_events"} <= tables
     assert "combination_draw_results" in tables
     assert "gana_gato_draw_results" in tables
+    assert "pool_contest_results" in tables
 
 
 def test_upgrade_from_phase_b_head(tmp_path: Path) -> None:
@@ -45,5 +46,19 @@ def test_upgrade_from_phase_d_head(tmp_path: Path) -> None:
     command.upgrade(config, "head")
     assert (
         "gana_gato_draw_results"
+        in inspect(create_engine(f"sqlite:///{database_path}")).get_table_names()
+    )
+
+
+def test_upgrade_from_phase_e_head(tmp_path: Path) -> None:
+    backend_root = Path(__file__).resolve().parents[1]
+    database_path = tmp_path / "phase_e.sqlite3"
+    config = Config(str(backend_root / "alembic.ini"))
+    config.set_main_option("script_location", str(backend_root / "migrations"))
+    config.set_main_option("sqlalchemy.url", f"sqlite:///{database_path}")
+    command.upgrade(config, "20260906_04")
+    command.upgrade(config, "head")
+    assert (
+        "pool_contest_results"
         in inspect(create_engine(f"sqlite:///{database_path}")).get_table_names()
     )
