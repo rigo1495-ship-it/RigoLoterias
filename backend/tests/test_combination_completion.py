@@ -21,9 +21,7 @@ def draws(count: int = 15) -> list[CombinationDrawResult]:
 
 
 def test_generation_filters_reproducibility_and_bounds() -> None:
-    request = GenerationRequest(
-        5, 6, (1,), (), 50, 200, 2, 5, 1, 5, 2, 0, 2, "random", 12
-    )
+    request = GenerationRequest(5, 6, (1,), (), 50, 200, 2, 5, 1, 5, 2, 0, 2, "random", 12)
     first = generate(CONFIG, request, (1, 2, 3, 4, 5, 6))
     assert first == generate(CONFIG, request, (1, 2, 3, 4, 5, 6))
     assert all(1 in ticket and max(ticket) <= 56 for ticket in first)
@@ -48,10 +46,7 @@ def test_walk_forward_is_reproducible_and_anti_lookahead() -> None:
         "melate", "8", changed[8].draw_date, (30, 31, 32, 33, 34, 35)
     )
     second = walk_forward(changed, "melate", CONFIG, request, 5)
-    assert (
-        first["steps"][3]["generated_tickets"]
-        == second["steps"][3]["generated_tickets"]
-    )
+    assert first["steps"][3]["generated_tickets"] == second["steps"][3]["generated_tickets"]
     assert first == walk_forward(source, "melate", CONFIG, request, 5)
     assert first["steps"][0]["history_cutoff"] == "4"
     assert first["tickets_generated"] == first["random_baseline"]["tickets_generated"]

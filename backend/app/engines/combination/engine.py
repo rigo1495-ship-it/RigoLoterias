@@ -35,9 +35,7 @@ def normalize_selection(
         raise ValueError("Selection size is not allowed")
     if len(set(numbers)) != len(numbers):
         raise ValueError("Duplicate numbers are not allowed")
-    if any(
-        number < config.min_number or number > config.max_number for number in numbers
-    ):
+    if any(number < config.min_number or number > config.max_number for number in numbers):
         raise ValueError("Number outside configured universe")
     return numbers
 
@@ -66,9 +64,7 @@ def combination_statistics(
         for number in universe
     }
     intervals = {
-        number: [
-            right - left for left, right in zip(indices, indices[1:], strict=False)
-        ]
+        number: [right - left for left, right in zip(indices, indices[1:], strict=False)]
         for number, indices in appearances.items()
     }
     primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53}
@@ -76,9 +72,7 @@ def combination_statistics(
         "draw_count": len(history),
         "frequency": dict(frequency),
         "window_frequency": {
-            str(window): dict(
-                Counter(number for draw in history[-window:] for number in draw)
-            )
+            str(window): dict(Counter(number for draw in history[-window:] for number in draw))
             for window in windows
         },
         "delays": {
@@ -97,18 +91,11 @@ def combination_statistics(
         "patterns": {
             "sums": dict(Counter(map(sum, history))),
             "ranges": dict(Counter(max(draw) - min(draw) for draw in history)),
-            "parity": dict(
-                Counter(sum(number % 2 == 0 for number in draw) for draw in history)
-            ),
-            "primes": dict(
-                Counter(sum(number in primes for number in draw) for draw in history)
-            ),
+            "parity": dict(Counter(sum(number % 2 == 0 for number in draw) for draw in history)),
+            "primes": dict(Counter(sum(number in primes for number in draw) for draw in history)),
             "consecutives": dict(
                 Counter(
-                    sum(
-                        right == left + 1
-                        for left, right in zip(draw, draw[1:], strict=False)
-                    )
+                    sum(right == left + 1 for left, right in zip(draw, draw[1:], strict=False))
                     for draw in history
                 )
             ),

@@ -24,9 +24,7 @@ class CombinationTicket:
     numbers: tuple[int, ...]
 
     @classmethod
-    def create(
-        cls, values: list[int], config: CombinationGameConfig
-    ) -> "CombinationTicket":
+    def create(cls, values: list[int], config: CombinationGameConfig) -> "CombinationTicket":
         return cls(normalize_selection(values, config))
 
 

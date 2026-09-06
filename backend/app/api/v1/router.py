@@ -18,9 +18,7 @@ def health() -> dict[str, str]:
 
 @router.get("/games", response_model=list[GameResponse])
 def games() -> list[GameResponse]:
-    return [
-        GameResponse.from_definition(module.definition) for module in registry.all()
-    ]
+    return [GameResponse.from_definition(module.definition) for module in registry.all()]
 
 
 @router.get("/games/{game}", response_model=GameResponse)

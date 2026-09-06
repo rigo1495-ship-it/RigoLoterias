@@ -9,6 +9,8 @@ from app.engines.combination.engine import (
     CombinationGameConfig,
     theoretical_probability,
 )
+from app.games.chispazo.config import CONFIG as CHISPAZO_CONFIG
+from app.games.chispazo.config import RULE_VERSION as CHISPAZO_RULE
 from app.games.combination_backtest import walk_forward
 from app.games.combination_domain import AdditionalNumber, CombinationDrawResult
 from app.games.combination_service import (
@@ -27,6 +29,7 @@ router = APIRouter(tags=["Combination games"])
 engine = build_engine()
 runs: dict[tuple[str, int], dict[str, object]] = {}
 GAMES = {
+    "chispazo": (CHISPAZO_CONFIG, CHISPAZO_RULE),
     "melate": (MELATE_CONFIG, MELATE_RULE),
     "melate_retro": (RETRO_CONFIG, RETRO_RULE),
 }
@@ -83,9 +86,7 @@ def game_config(slug: str) -> dict[str, object]:
 def history(slug: str) -> list[CombinationDrawResult]:
     with Session(engine) as session:
         rows = session.scalars(
-            select(CombinationDrawResultModel).where(
-                CombinationDrawResultModel.game_slug == slug
-            )
+            select(CombinationDrawResultModel).where(CombinationDrawResultModel.game_slug == slug)
         ).all()
         return [
             CombinationDrawResult(
@@ -129,9 +130,7 @@ def latest(slug: str) -> dict[str, object]:
 @router.post("/{slug}/imports")
 def imports(slug: str, body: ImportBody) -> dict[str, object]:
     config, rule = identity(slug)
-    preview = parse_history(
-        body.csv_text, game_slug=slug, config=config, rule_version=rule
-    )
+    preview = parse_history(body.csv_text, game_slug=slug, config=config, rule_version=rule)
     if body.commit:
         with Session(engine) as session:
             known = set(
@@ -192,9 +191,7 @@ def analysis(slug: str) -> dict[str, object]:
         "signals": {
             key: {
                 "implemented": key in {"FR", "CO", "RE", "PA", "PR"},
-                "definition": (
-                    "descriptive" if key in {"FR", "CO", "RE", "PA", "PR"} else None
-                ),
+                "definition": ("descriptive" if key in {"FR", "CO", "RE", "PA", "PR"} else None),
                 "limitations": "not a probability",
             }
             for key in ("FR", "LT", "CA", "PC", "CO", "RE", "PA", "PR")
@@ -229,7 +226,10 @@ def portfolios(slug: str, body: PortfolioBody) -> dict[str, object]:
 def backtests(slug: str, body: BacktestBody) -> dict[str, object]:
     config, rule = identity(slug)
     request = GenerationRequest(
-        body.number_of_tickets, 6, strategy=body.strategy, random_seed=body.random_seed
+        body.number_of_tickets,
+        config.natural_numbers_drawn,
+        strategy=body.strategy,
+        random_seed=body.random_seed,
     )
     result = walk_forward(history(slug), slug, config, request, body.train_size)
     result.update(

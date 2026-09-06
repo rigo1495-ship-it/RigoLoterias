@@ -30,7 +30,5 @@ def test_upgrade_from_phase_b_head(tmp_path: Path) -> None:
     command.upgrade(config, "head")
     inspector = inspect(create_engine(f"sqlite:///{database_path}"))
     assert "combination_draw_results" in inspector.get_table_names()
-    indexes = {
-        item["name"] for item in inspector.get_indexes("combination_draw_results")
-    }
+    indexes = {item["name"] for item in inspector.get_indexes("combination_draw_results")}
     assert "uq_combination_game_draw" in indexes

@@ -15,9 +15,7 @@ from app.games.melate_retro.config import CONFIG as RETRO
 def test_ncr_small_exhaustive() -> None:
     for n in range(1, 10):
         for r in range(n + 1):
-            assert ncr(n, r) == math.factorial(n) // (
-                math.factorial(r) * math.factorial(n - r)
-            )
+            assert ncr(n, r) == math.factorial(n) // (math.factorial(r) * math.factorial(n - r))
 
 
 @pytest.mark.parametrize("size", [6, 7, 8, 9, 10])

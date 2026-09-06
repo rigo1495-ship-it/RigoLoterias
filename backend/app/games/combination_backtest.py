@@ -36,9 +36,7 @@ def walk_forward(
             history[-1].natural_numbers,
         )
         hits = [len(set(ticket) & set(target.natural_numbers)) for ticket in tickets]
-        base_hits = [
-            len(set(ticket) & set(target.natural_numbers)) for ticket in baseline
-        ]
+        base_hits = [len(set(ticket) & set(target.natural_numbers)) for ticket in baseline]
         baseline_total += sum(value == 6 for value in base_hits)
         hit_counts.update(hits)
         winning += sum(value == 6 for value in hits)
@@ -67,9 +65,7 @@ def walk_forward(
         "hits_by_natural_count": dict(hit_counts),
         "additional_hits": 0,
         "hits_per_1000_tickets": winning * 1000 / total if total else 0.0,
-        "average_hits": (
-            sum(k * v for k, v in hit_counts.items()) / total if total else 0.0
-        ),
+        "average_hits": (sum(k * v for k, v in hit_counts.items()) / total if total else 0.0),
         "max_hits": max(hit_counts, default=0),
         "roi": None,
         "return_per_peso_wagered": None,

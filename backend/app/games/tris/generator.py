@@ -34,9 +34,7 @@ def generate_portfolio(
         frequencies = cast(dict[str, dict[str, int]], raw_frequencies)
 
         def score(number: str) -> int:
-            return sum(
-                frequencies[f"D{i + 1}"].get(digit, 0) for i, digit in enumerate(number)
-            )
+            return sum(frequencies[f"D{i + 1}"].get(digit, 0) for i, digit in enumerate(number))
 
         ranked = sorted(pool, key=lambda number: (-score(number), number))
         if strategy == "heuristic_ranked":
@@ -49,9 +47,7 @@ def generate_portfolio(
                     candidates,
                     key=lambda candidate: (
                         min(
-                            sum(
-                                a != b for a, b in zip(candidate, selected, strict=True)
-                            )
+                            sum(a != b for a, b in zip(candidate, selected, strict=True))
                             for selected in tickets
                         ),
                         score(candidate),

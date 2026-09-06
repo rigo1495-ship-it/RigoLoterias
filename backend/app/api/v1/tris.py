@@ -56,11 +56,7 @@ def _domain(row: TrisDrawResultModel) -> TrisDrawResult:
         row.draw_number,
         row.draw_date,
         row.winning_number,
-        (
-            __import__("datetime").time.fromisoformat(row.draw_time)
-            if row.draw_time
-            else None
-        ),
+        (__import__("datetime").time.fromisoformat(row.draw_time) if row.draw_time else None),
         row.draw_name,
         row.source,
         row.verified,
@@ -69,9 +65,7 @@ def _domain(row: TrisDrawResultModel) -> TrisDrawResult:
 
 def _history() -> list[TrisDrawResult]:
     with Session(_engine) as session:
-        return [
-            _domain(row) for row in session.scalars(select(TrisDrawResultModel)).all()
-        ]
+        return [_domain(row) for row in session.scalars(select(TrisDrawResultModel)).all()]
 
 
 @router.get("/draws")
@@ -110,9 +104,7 @@ def import_draws(request: ImportRequest) -> dict[str, object]:
                         TrisDrawResultModel(
                             draw_number=draw.draw_number,
                             draw_date=draw.draw_date,
-                            draw_time=(
-                                draw.draw_time.isoformat() if draw.draw_time else None
-                            ),
+                            draw_time=(draw.draw_time.isoformat() if draw.draw_time else None),
                             draw_name=draw.draw_name,
                             winning_number=draw.winning_number,
                             source=draw.source,
@@ -141,9 +133,7 @@ def analysis() -> dict[str, object]:
     history = _history()
     stats = positional_statistics(history)
     return {
-        "as_of": max(
-            (draw.draw_date for draw in history), default=date.today()
-        ).isoformat(),
+        "as_of": max((draw.draw_date for draw in history), default=date.today()).isoformat(),
         "statistics": stats,
         "claim": "descriptive_not_predictive",
     }
@@ -151,9 +141,7 @@ def analysis() -> dict[str, object]:
 
 @router.post("/portfolios")
 def portfolio(request: PortfolioRequest) -> dict[str, object]:
-    generated = generate_portfolio(
-        _history(), request.count, request.strategy, request.seed
-    )
+    generated = generate_portfolio(_history(), request.count, request.strategy, request.seed)
     return {"tickets": generated.tickets, "metadata": generated.metadata}
 
 

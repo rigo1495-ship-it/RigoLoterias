@@ -60,16 +60,24 @@ def parse_history(
         try:
             draw_number = str(row.get("CONCURSO", "")).strip()
             naturals = tuple(
-                sorted(int(row[f"{prefix}{index}"]) for index in range(1, 7))
-            )
-            additional = int(row[f"{prefix}7"])
-            if not draw_number or len(set(naturals)) != 6 or additional in naturals:
-                raise ValueError(
-                    "Missing draw, duplicate natural, or repeated additional"
+                sorted(
+                    int(row[f"{prefix}{index}"])
+                    for index in range(1, config.natural_numbers_drawn + 1)
                 )
+            )
+            additional_values = tuple(
+                int(row[f"{prefix}{config.natural_numbers_drawn + index}"])
+                for index in range(1, config.additional_numbers_drawn + 1)
+            )
+            if (
+                not draw_number
+                or len(set(naturals)) != config.natural_numbers_drawn
+                or set(additional_values) & set(naturals)
+            ):
+                raise ValueError("Missing draw, duplicate natural, or repeated additional")
             if any(
                 value < config.min_number or value > config.max_number
-                for value in (*naturals, additional)
+                for value in (*naturals, *additional_values)
             ):
                 raise ValueError("Number outside configured universe")
             draw = CombinationDrawResult(
@@ -77,7 +85,7 @@ def parse_history(
                 draw_number,
                 datetime.strptime(row["FECHA"], "%d/%m/%Y").date(),
                 naturals,
-                (AdditionalNumber(additional),),
+                tuple(AdditionalNumber(value) for value in additional_values),
             )
             if draw_number in seen:
                 duplicates.append(draw_number)
@@ -125,9 +133,7 @@ def generate_tickets(
             sorted(
                 (
                     *required,
-                    *rng.sample(
-                        remaining, config.natural_numbers_drawn - len(required)
-                    ),
+                    *rng.sample(remaining, config.natural_numbers_drawn - len(required)),
                 )
             )
         )
@@ -138,9 +144,7 @@ def generate_tickets(
         raise ValueError("Constraints cannot produce requested unique tickets")
     if strategy == "coverage_optimized":
         tickets.sort(
-            key=lambda ticket: sum(
-                sum(number in other for number in ticket) for other in tickets
-            )
+            key=lambda ticket: sum(sum(number in other for number in ticket) for other in tickets)
         )
     elif strategy not in {"random", "heuristic_ranked"}:
         raise ValueError("Unknown strategy")
@@ -180,9 +184,7 @@ def generate(
         5000, request.number_of_tickets * 500
     ):
         ticket = tuple(
-            sorted(
-                (*required, *rng.sample(remaining, request.ticket_size - len(required)))
-            )
+            sorted((*required, *rng.sample(remaining, request.ticket_size - len(required))))
         )
         attempts += 1
         even = sum(n % 2 == 0 for n in ticket)
@@ -197,32 +199,19 @@ def generate(
             and (request.max_even is None or even <= request.max_even)
             and (request.min_primes is None or prime >= request.min_primes)
             and (request.max_primes is None or prime <= request.max_primes)
-            and (
-                request.max_consecutive is None
-                or consecutive <= request.max_consecutive
-            )
-            and (
-                request.min_previous_repeats is None
-                or repeats >= request.min_previous_repeats
-            )
-            and (
-                request.max_previous_repeats is None
-                or repeats <= request.max_previous_repeats
-            )
+            and (request.max_consecutive is None or consecutive <= request.max_consecutive)
+            and (request.min_previous_repeats is None or repeats >= request.min_previous_repeats)
+            and (request.max_previous_repeats is None or repeats <= request.max_previous_repeats)
         )
         if valid and ticket not in candidates:
             candidates.append(ticket)
     if len(candidates) < request.number_of_tickets:
-        raise ValueError(
-            "Constraints cannot produce requested tickets within bounded search"
-        )
+        raise ValueError("Constraints cannot produce requested tickets within bounded search")
     if request.strategy == "coverage_optimized":
         pool = candidates.copy()
         selected = [pool.pop(0)]
         while pool and len(selected) < request.number_of_tickets:
-            choice = min(
-                pool, key=lambda t: (max(len(set(t) & set(s)) for s in selected), t)
-            )
+            choice = min(pool, key=lambda t: (max(len(set(t) & set(s)) for s in selected), t))
             selected.append(choice)
             pool.remove(choice)
         candidates = selected
@@ -255,9 +244,7 @@ def stats_for(
     return combination_statistics(
         [
             draw.natural_numbers
-            for draw in sorted(
-                draws, key=lambda item: (item.draw_date, item.draw_number)
-            )
+            for draw in sorted(draws, key=lambda item: (item.draw_date, item.draw_number))
         ],
         config,
     )

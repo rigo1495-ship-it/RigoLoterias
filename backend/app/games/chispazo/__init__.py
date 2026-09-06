@@ -6,7 +6,7 @@ module = GameModule(
         "chispazo",
         "Chispazo",
         "combination",
-        GameStatus.PLANNED,
+        GameStatus.AVAILABLE,
         frozenset(
             {
                 C.HISTORY,

@@ -21,10 +21,7 @@ def test_official_retro_history_and_golden_records() -> None:
         rule_version=RETRO_RULE,
     )
     assert len(preview.accepted) == 1666 and not preview.rejected
-    assert (
-        preview.source_hash
-        == "04f37e60e76023a96e60406bc3fba8eb5bbd5c3ce15b4d874e14cc0fc1e6f952"
-    )
+    assert preview.source_hash == "04f37e60e76023a96e60406bc3fba8eb5bbd5c3ce15b4d874e14cc0fc1e6f952"
     latest = preview.accepted[0]
     assert (
         latest.draw_number,
