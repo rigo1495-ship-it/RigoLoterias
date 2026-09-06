@@ -16,4 +16,6 @@ export const api = {
   trisPortfolio: (body: { count: number; strategy: string; seed: number }) => request<{ tickets: string[] }>("/tris/portfolios", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
   combinationAnalysis: (slug: string) => request<Record<string, unknown>>(`/${slug}/analysis`),
   combinationPortfolio: (slug: string, body: object) => request<{ tickets: number[][] }>(`/${slug}/portfolios`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
+  ganaGatoAnalysis: () => request<Record<string, unknown>>("/gana_gato/analysis"),
+  ganaGatoPortfolio: (body: object) => request<{ tickets: number[][] }>("/gana_gato/portfolios", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
 };

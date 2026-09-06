@@ -6,6 +6,7 @@ import { HomePage } from "../pages/HomePage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 import { TrisPage } from "../pages/TrisPage";
 import { CombinationGamePage } from "../pages/CombinationGamePage";
+import { GanaGatoPage } from "../pages/GanaGatoPage";
 
 export const router = createBrowserRouter([
   { path: "/", element: <AppShell />, children: [
@@ -14,6 +15,7 @@ export const router = createBrowserRouter([
     { path: "games/melate", element: <CombinationGamePage /> },
     { path: "games/melate-retro", element: <CombinationGamePage /> },
     { path: "games/chispazo", element: <CombinationGamePage /> },
+    { path: "games/gana-gato", element: <GanaGatoPage /> },
     { path: "games/:slug", element: <GamePage /> },
     { path: "*", element: <NotFoundPage /> },
   ] },

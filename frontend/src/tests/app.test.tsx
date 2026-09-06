@@ -15,7 +15,7 @@ test("app renders complete navigation", () => {
   for (const label of ["Inicio", "TRIS", "Melate Retro", "Chispazo", "Lotería Nacional", "Gana Gato", "Progol Media Semana", "Protouch"]) expect(screen.getByRole("link", { name: label })).toBeInTheDocument();
 });
 
-test.each(["gana-gato", "progol", "progol-media-semana", "protouch"])("%s route is planned", slug => {
+test.each(["progol", "progol-media-semana", "protouch"])("%s route is planned", slug => {
   renderAt(`/games/${slug}`);
   expect(screen.getByText("Planned", { selector: "h2" })).toBeInTheDocument();
 });

@@ -49,5 +49,10 @@ p { color: var(--muted); line-height: 1.65; }
 .status-disabled { color: var(--muted); }
 .empty-panel { max-width: 720px; }
 .muted, .state { color: var(--muted); }
+.gato-board { display: grid; grid-template-columns: repeat(3, minmax(4rem, 7rem)); gap: .6rem; margin: 1rem 0; }
+.gato-board label, .gato-center { min-height: 5rem; display: grid; place-items: center; gap: .2rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-3); font-weight: 800; }
+.gato-board select { width: 3rem; padding: .35rem; color: inherit; background: var(--surface-1); border: 1px solid var(--accent); border-radius: .3rem; }
+.gato-center { color: var(--gold); font-size: 1.5rem; }
+.gato-center small { color: var(--muted); font-size: .65rem; }
 .state-error { color: #ff9d9d; }
 @media (max-width: 780px) { .app-shell { grid-template-columns: 1fr; } .sidebar { position: static; border-right: 0; border-bottom: 1px solid var(--border); } nav { grid-template-columns: repeat(2, 1fr); } .nav-group { margin: 0; } }
