@@ -28,4 +28,4 @@ Known limitation: official raw history lacks current card teams, kickoff, design
 
 ## Phase H preconditions and git status
 
-Phase H requires separate authorization and official Lotería Nacional rules/data. `git status --short` is recorded after the final verification run.
+Phase H requires separate authorization and official Lotería Nacional rules/data. Final `git status --short`: clean.
