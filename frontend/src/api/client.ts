@@ -18,4 +18,6 @@ export const api = {
   combinationPortfolio: (slug: string, body: object) => request<{ tickets: number[][] }>(`/${slug}/portfolios`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
   ganaGatoAnalysis: () => request<Record<string, unknown>>("/gana_gato/analysis"),
   ganaGatoPortfolio: (body: object) => request<{ tickets: number[][] }>("/gana_gato/portfolios", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
+  poolAnalysis: (slug: string) => request<Record<string, unknown>>(`/${slug}/analysis`),
+  poolPortfolio: (slug: string, body: object) => request<{ line_count: number; cost_mxn: number }>(`/${slug}/portfolios`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
 };

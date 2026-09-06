@@ -54,5 +54,10 @@ p { color: var(--muted); line-height: 1.65; }
 .gato-board select { width: 3rem; padding: .35rem; color: inherit; background: var(--surface-1); border: 1px solid var(--accent); border-radius: .3rem; }
 .gato-center { color: var(--gold); font-size: 1.5rem; }
 .gato-center small { color: var(--muted); font-size: .65rem; }
+.pool-grid { display: grid; grid-template-columns: 2rem repeat(3, minmax(3.4rem, 1fr)) minmax(5rem, 1.4fr); gap: .4rem; align-items: center; margin: 1rem 0; }
+.pool-grid > * { padding: .45rem; border-bottom: 1px solid var(--border); }
+.pool-head { color: var(--gold); font-size: .75rem; font-weight: 800; }
+.pool-grid label { display: flex; gap: .3rem; align-items: center; }
+.revancha { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
 .state-error { color: #ff9d9d; }
 @media (max-width: 780px) { .app-shell { grid-template-columns: 1fr; } .sidebar { position: static; border-right: 0; border-bottom: 1px solid var(--border); } nav { grid-template-columns: repeat(2, 1fr); } .nav-group { margin: 0; } }
