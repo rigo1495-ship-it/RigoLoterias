@@ -1,0 +1,6 @@
+{
+  "source_algorithm": "random.Random(seed) + sample(zfill(5) universe)",
+  "seed": 42,
+  "count": 3,
+  "expected": ["83810", "14592", "03278"]
+}

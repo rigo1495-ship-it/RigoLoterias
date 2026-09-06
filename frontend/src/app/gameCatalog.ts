@@ -1,7 +1,7 @@
 import type { Game } from "../types/game";
 
 export const gameCatalog: Game[] = [
-  { slug: "tris", display_name: "TRIS", category: "positional", status: "planned", capabilities: [] },
+  { slug: "tris", display_name: "TRIS", category: "positional", status: "available", capabilities: ["history", "statistics", "analysis", "generation", "backtesting", "simulation", "settlement"] },
   { slug: "melate", display_name: "Melate", category: "combination", status: "planned", capabilities: [] },
   { slug: "melate_retro", display_name: "Melate Retro", category: "combination", status: "planned", capabilities: [] },
   { slug: "chispazo", display_name: "Chispazo", category: "combination", status: "planned", capabilities: [] },

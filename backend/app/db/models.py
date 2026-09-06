@@ -4,6 +4,7 @@ from typing import Any
 from sqlalchemy import (
     JSON,
     Boolean,
+    CheckConstraint,
     Date,
     DateTime,
     Float,
@@ -19,7 +20,9 @@ from app.db.base import Base
 
 
 class TimestampMixin:
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.utcnow
+    )
 
 
 class Game(Base, TimestampMixin):
@@ -76,7 +79,9 @@ class HistoricalImport(Base, TimestampMixin):
 class ImportRowError(Base, TimestampMixin):
     __tablename__ = "import_row_errors"
     id: Mapped[int] = mapped_column(primary_key=True)
-    import_id: Mapped[int] = mapped_column(ForeignKey("historical_imports.id"), index=True)
+    import_id: Mapped[int] = mapped_column(
+        ForeignKey("historical_imports.id"), index=True
+    )
     row_number: Mapped[int] = mapped_column(Integer)
     message: Mapped[str] = mapped_column(Text)
     raw_payload: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
@@ -119,7 +124,9 @@ class BacktestRun(Base, JsonRunMixin):
 class BacktestStep(Base, TimestampMixin):
     __tablename__ = "backtest_steps"
     id: Mapped[int] = mapped_column(primary_key=True)
-    backtest_run_id: Mapped[int] = mapped_column(ForeignKey("backtest_runs.id"), index=True)
+    backtest_run_id: Mapped[int] = mapped_column(
+        ForeignKey("backtest_runs.id"), index=True
+    )
     target_draw_id: Mapped[int] = mapped_column(ForeignKey("draws.id"))
     history_end_draw_id: Mapped[int | None] = mapped_column(ForeignKey("draws.id"))
     result_json: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
@@ -138,7 +145,9 @@ class GeneratedPortfolio(Base, TimestampMixin):
 class GeneratedTicket(Base, TimestampMixin):
     __tablename__ = "generated_tickets"
     id: Mapped[int] = mapped_column(primary_key=True)
-    portfolio_id: Mapped[int] = mapped_column(ForeignKey("generated_portfolios.id"), index=True)
+    portfolio_id: Mapped[int] = mapped_column(
+        ForeignKey("generated_portfolios.id"), index=True
+    )
     payload_json: Mapped[dict[str, Any]] = mapped_column(JSON)
     heuristic_score: Mapped[float | None] = mapped_column(Float)
     model_score: Mapped[float | None] = mapped_column(Float)
@@ -169,3 +178,20 @@ class AuditEvent(Base, TimestampMixin):
     entity_id: Mapped[str] = mapped_column(String(128), index=True)
     action: Mapped[str] = mapped_column(String(64))
     payload_json: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+
+
+class TrisDrawResultModel(Base, TimestampMixin):
+    __tablename__ = "tris_draw_results"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    draw_number: Mapped[str] = mapped_column(String(128), unique=True, index=True)
+    draw_date: Mapped[date] = mapped_column(Date, index=True)
+    draw_time: Mapped[str | None] = mapped_column(String(16))
+    draw_name: Mapped[str] = mapped_column(String(128), default="Sin horario")
+    winning_number: Mapped[str] = mapped_column(String(5))
+    source: Mapped[str] = mapped_column(Text, default="manual")
+    verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    __table_args__ = (
+        CheckConstraint(
+            "length(winning_number) = 5", name="ck_tris_winning_number_length"
+        ),
+    )

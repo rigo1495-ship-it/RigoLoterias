@@ -6,7 +6,7 @@ module = GameModule(
         "tris",
         "TRIS",
         "positional",
-        GameStatus.PLANNED,
+        GameStatus.AVAILABLE,
         frozenset(
             {
                 C.HISTORY,

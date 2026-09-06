@@ -1,0 +1,8 @@
+{
+  "source_project": "TRIS MASTER",
+  "source_version": "unversioned snapshot 2026-07-12",
+  "source_path": "data/sample_draws.csv",
+  "source_sha256": "333988d8ec6f5562034971bfc7f16bb59c5f4b9fe69e0970f7f920d2646730ac",
+  "fixture_sha256": "47a320a5777081e28c2385a1d7693bfe5e3acb8eff60e9ae65800a73256ad908",
+  "purpose": "Small authorized parser and leading-zero regression fixture"
+}
