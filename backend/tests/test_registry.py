@@ -13,7 +13,13 @@ def test_registry_statuses_and_capabilities_are_valid() -> None:
     for module in registry.all():
         assert isinstance(module.definition.status, GameStatus)
         assert all(isinstance(item, Capability) for item in module.definition.capabilities)
-        if module.definition.slug in {"tris", "melate", "melate_retro", "chispazo"}:
+        if module.definition.slug in {
+            "tris",
+            "melate",
+            "melate_retro",
+            "chispazo",
+            "gana_gato",
+        }:
             assert module.definition.status is GameStatus.AVAILABLE
         else:
             assert module.definition.status is not GameStatus.AVAILABLE

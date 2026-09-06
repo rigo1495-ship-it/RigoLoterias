@@ -6,7 +6,7 @@ module = GameModule(
         "gana_gato",
         "Gana Gato",
         "board",
-        GameStatus.PLANNED,
+        GameStatus.AVAILABLE,
         frozenset(
             {
                 C.HISTORY,

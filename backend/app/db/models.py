@@ -200,3 +200,15 @@ class CombinationDrawResultModel(Base, TimestampMixin):
     parser_version: Mapped[str] = mapped_column(String(64))
     rule_version: Mapped[str] = mapped_column(String(64))
     __table_args__ = (Index("uq_combination_game_draw", "game_slug", "draw_number", unique=True),)
+
+
+class GanaGatoDrawResultModel(Base, TimestampMixin):
+    __tablename__ = "gana_gato_draw_results"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    draw_number: Mapped[str] = mapped_column(String(128), unique=True, index=True)
+    draw_date: Mapped[date] = mapped_column(Date, index=True)
+    board_json: Mapped[list[int]] = mapped_column(JSON)
+    source: Mapped[str] = mapped_column(Text)
+    source_hash: Mapped[str] = mapped_column(String(64), index=True)
+    parser_version: Mapped[str] = mapped_column(String(64))
+    rule_version: Mapped[str] = mapped_column(String(64))
