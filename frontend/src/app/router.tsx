@@ -13,6 +13,7 @@ export const router = createBrowserRouter([
     { path: "games/tris", element: <TrisPage /> },
     { path: "games/melate", element: <CombinationGamePage /> },
     { path: "games/melate-retro", element: <CombinationGamePage /> },
+    { path: "games/chispazo", element: <CombinationGamePage /> },
     { path: "games/:slug", element: <GamePage /> },
     { path: "*", element: <NotFoundPage /> },
   ] },
