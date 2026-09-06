@@ -14,4 +14,6 @@ export const api = {
   trisDraws: () => request<Array<{ draw_number: string; draw_date: string; winning_number: string }>>("/tris/draws"),
   trisStatistics: () => request<Record<string, unknown>>("/tris/statistics"),
   trisPortfolio: (body: { count: number; strategy: string; seed: number }) => request<{ tickets: string[] }>("/tris/portfolios", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
+  combinationAnalysis: (slug: string) => request<Record<string, unknown>>(`/${slug}/analysis`),
+  combinationPortfolio: (slug: string, body: object) => request<{ tickets: number[][] }>(`/${slug}/portfolios`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
 };
