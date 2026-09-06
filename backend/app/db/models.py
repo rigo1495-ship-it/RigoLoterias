@@ -227,3 +227,16 @@ class PoolContestResultModel(Base, TimestampMixin):
     parser_version: Mapped[str] = mapped_column(String(64))
     rule_version: Mapped[str] = mapped_column(String(64))
     __table_args__ = (Index("uq_pool_game_contest", "game_slug", "contest_number", unique=True),)
+
+
+class ProtouchContestResultModel(Base, TimestampMixin):
+    __tablename__ = "protouch_contest_results"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    contest_number: Mapped[str] = mapped_column(String(128), unique=True, index=True)
+    contest_date: Mapped[date] = mapped_column(Date, index=True)
+    outcomes_json: Mapped[list[str]] = mapped_column(JSON)
+    prize_pool_mxn: Mapped[int] = mapped_column(Integer, default=0)
+    source: Mapped[str] = mapped_column(Text)
+    source_hash: Mapped[str] = mapped_column(String(64), index=True)
+    parser_version: Mapped[str] = mapped_column(String(64))
+    rule_version: Mapped[str] = mapped_column(String(64))

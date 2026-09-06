@@ -21,6 +21,7 @@ def test_registry_statuses_and_capabilities_are_valid() -> None:
             "gana_gato",
             "progol",
             "progol_media_semana",
+            "protouch",
         }:
             assert module.definition.status is GameStatus.AVAILABLE
         else:

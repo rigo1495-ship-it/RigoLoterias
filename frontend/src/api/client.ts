@@ -20,4 +20,5 @@ export const api = {
   ganaGatoPortfolio: (body: object) => request<{ tickets: number[][] }>("/gana_gato/portfolios", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
   poolAnalysis: (slug: string) => request<Record<string, unknown>>(`/${slug}/analysis`),
   poolPortfolio: (slug: string, body: object) => request<{ line_count: number; cost_mxn: number }>(`/${slug}/portfolios`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
+  protouchPortfolio: (body: object) => request<{ line_count: number; cost_mxn: number }>("/protouch/portfolios", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }),
 };
