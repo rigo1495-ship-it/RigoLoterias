@@ -12,18 +12,10 @@ function renderAt(path: string) {
 
 test("app renders complete navigation", () => {
   renderAt("/");
-  for (const label of ["Inicio", "TRIS", "Melate Retro", "Chispazo", "Lotería Nacional", "Gana Gato", "Progol Media Semana", "Protouch"]) expect(screen.getByRole("link", { name: label })).toBeInTheDocument();
+  for (const label of ["Inicio", "TRIS", "Melate Retro", "Chispazo", "Gana Gato", "Progol Media Semana", "Protouch"]) expect(screen.getByRole("link", { name: label })).toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: "Lotería Nacional" })).not.toBeInTheDocument();
 });
 
-test.each(["protouch"])("%s route is planned", slug => {
-  renderAt(`/games/${slug}`);
-  expect(screen.getByText("Planned", { selector: "h2" })).toBeInTheDocument();
-});
-
-test("loteria nacional awaits rules", () => {
-  renderAt("/games/loteria-nacional");
-  expect(screen.getByText("Awaiting rules", { selector: "h2" })).toBeInTheDocument();
-});
 
 test("invalid route renders 404", () => {
   renderAt("/missing");

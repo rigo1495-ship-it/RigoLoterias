@@ -15,5 +15,4 @@ structural API, game registry, frontend navigation, design-system primitives and
 
 ## Status policy
 
-Eight games are `planned`; Lotería Nacional is `awaiting_rules`; none is `available`.
-
+This historical Phase A status was superseded. PLATFORM CORE SCOPE COMPLETE — 8 GAMES.

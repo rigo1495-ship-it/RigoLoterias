@@ -2,7 +2,7 @@
 
 ## Final status
 
-`available`. Phase H / Lotería Nacional was not started.
+`available`. Protouch completes the eight-game platform core scope.
 
 ## Rules, history and domain
 
@@ -26,6 +26,6 @@ Migration `20260906_06` is additive (`protouch_contest_results`) and supports ba
 
 Known limitation: official raw history lacks current card teams, kickoff, designated Initial match and Initial result; the UI/API deliberately do not fabricate them. Historical portfolio backtest is random/descriptive and has no ROI without official contest payout data.
 
-## Phase H preconditions and git status
+## Scope and git status
 
-Phase H requires separate authorization and official Lotería Nacional rules/data. Final `git status --short`: clean.
+PLATFORM CORE SCOPE COMPLETE — 8 GAMES. No additional game is in scope. Final `git status --short`: clean.

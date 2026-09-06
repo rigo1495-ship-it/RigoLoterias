@@ -5,7 +5,6 @@ import { pathFor } from "../app/gameCatalog";
 const primary = [
   ["TRIS", "tris"],
   ["Chispazo", "chispazo"],
-  ["Lotería Nacional", "loteria_nacional"],
   ["Gana Gato", "gana_gato"],
   ["Protouch", "protouch"],
 ];

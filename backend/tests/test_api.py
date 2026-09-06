@@ -30,7 +30,7 @@ def test_tris_end_to_end_api() -> None:
 def test_games() -> None:
     response = client.get("/api/v1/games")
     assert response.status_code == 200
-    assert len(response.json()) == 9
+    assert len(response.json()) == 8
 
 
 def test_game_lookup() -> None:

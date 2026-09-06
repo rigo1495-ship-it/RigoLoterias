@@ -1,6 +1,5 @@
 from app.games.chispazo import module as chispazo
 from app.games.gana_gato import module as gana_gato
-from app.games.loteria_nacional import module as loteria_nacional
 from app.games.melate import module as melate
 from app.games.melate_retro import module as melate_retro
 from app.games.progol import module as progol
@@ -17,7 +16,6 @@ def build_registry() -> GameRegistry:
             melate,
             melate_retro,
             chispazo,
-            loteria_nacional,
             gana_gato,
             progol,
             progol_media_semana,

@@ -1,24 +1,21 @@
 # RigoLoterias
 
-Canonical modular platform for lottery and pool analysis. Phase A provides the tested
-full-stack foundation only: it does not contain game algorithms, predictions, historical
-data, or prize rules.
+Canonical modular platform for lottery and pool analysis.
 
 ## Current game status
 
 | Game | Status |
 |---|---|
-| TRIS | Planned |
-| Melate | Planned |
-| Melate Retro | Planned |
-| Chispazo | Planned |
-| Lotería Nacional | Awaiting rules |
-| Gana Gato | Planned |
-| Progol | Planned |
-| Progol Media Semana | Planned |
-| Protouch | Planned |
+| TRIS | Available |
+| Melate | Available |
+| Melate Retro | Available |
+| Chispazo | Available |
+| Gana Gato | Available |
+| Progol | Available |
+| Progol Media Semana | Available |
+| Protouch | Available |
 
-No game is marked available.
+PLATFORM CORE SCOPE COMPLETE — 8 GAMES
 
 ## Architecture
 
@@ -81,4 +78,3 @@ alembic downgrade base
 ```
 
 Never aim `DATABASE_URL` at a source project's database.
-
