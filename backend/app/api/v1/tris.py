@@ -3,7 +3,11 @@ from datetime import date
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
+from app.db.models import TrisDrawResultModel
+from app.db.session import build_engine
 from app.engines.positional.engine import positional_statistics
 from app.games.tris.backtest import walk_forward_backtest
 from app.games.tris.domain import TrisDrawResult
@@ -12,7 +16,7 @@ from app.games.tris.importer import TrisHistoricalImporter
 from app.games.tris.simulation import simulate
 
 router = APIRouter(prefix="/tris", tags=["TRIS"])
-_draws: dict[str, TrisDrawResult] = {}
+_engine = build_engine()
 _backtests: dict[int, dict[str, object]] = {}
 
 
@@ -47,12 +51,29 @@ def _serialize(draw: TrisDrawResult) -> dict[str, object]:
     return value
 
 
+def _domain(row: TrisDrawResultModel) -> TrisDrawResult:
+    return TrisDrawResult(
+        row.draw_number,
+        row.draw_date,
+        row.winning_number,
+        __import__("datetime").time.fromisoformat(row.draw_time) if row.draw_time else None,
+        row.draw_name,
+        row.source,
+        row.verified,
+    )
+
+
+def _history() -> list[TrisDrawResult]:
+    with Session(_engine) as session:
+        return [_domain(row) for row in session.scalars(select(TrisDrawResultModel)).all()]
+
+
 @router.get("/draws")
 def draws() -> list[dict[str, object]]:
     return [
         _serialize(draw)
         for draw in sorted(
-            _draws.values(),
+            _history(),
             key=lambda item: (item.draw_date, item.draw_number),
             reverse=True,
         )
@@ -71,8 +92,26 @@ def latest() -> dict[str, object]:
 def import_draws(request: ImportRequest) -> dict[str, object]:
     preview = TrisHistoricalImporter().parse(request.csv_text)
     if request.commit:
-        for draw in preview.accepted:
-            _draws[draw.draw_number] = draw
+        with Session(_engine) as session:
+            for draw in preview.accepted:
+                existing = session.scalar(
+                    select(TrisDrawResultModel).where(
+                        TrisDrawResultModel.draw_number == draw.draw_number
+                    )
+                )
+                if existing is None:
+                    session.add(
+                        TrisDrawResultModel(
+                            draw_number=draw.draw_number,
+                            draw_date=draw.draw_date,
+                            draw_time=draw.draw_time.isoformat() if draw.draw_time else None,
+                            draw_name=draw.draw_name,
+                            winning_number=draw.winning_number,
+                            source=draw.source,
+                            verified=draw.verified,
+                        )
+                    )
+            session.commit()
     return {
         "source_hash": preview.source_hash,
         "rows_total": preview.rows_total,
@@ -86,16 +125,15 @@ def import_draws(request: ImportRequest) -> dict[str, object]:
 
 @router.get("/statistics")
 def statistics() -> dict[str, object]:
-    return positional_statistics(list(_draws.values()))
+    return positional_statistics(_history())
 
 
 @router.get("/analysis")
 def analysis() -> dict[str, object]:
-    stats = positional_statistics(list(_draws.values()))
+    history = _history()
+    stats = positional_statistics(history)
     return {
-        "as_of": max(
-            (draw.draw_date for draw in _draws.values()), default=date.today()
-        ).isoformat(),
+        "as_of": max((draw.draw_date for draw in history), default=date.today()).isoformat(),
         "statistics": stats,
         "claim": "descriptive_not_predictive",
     }
@@ -103,16 +141,14 @@ def analysis() -> dict[str, object]:
 
 @router.post("/portfolios")
 def portfolio(request: PortfolioRequest) -> dict[str, object]:
-    generated = generate_portfolio(
-        list(_draws.values()), request.count, request.strategy, request.seed
-    )
+    generated = generate_portfolio(_history(), request.count, request.strategy, request.seed)
     return {"tickets": generated.tickets, "metadata": generated.metadata}
 
 
 @router.post("/backtests")
 def backtest(request: BacktestRequest) -> dict[str, object]:
     result = walk_forward_backtest(
-        list(_draws.values()),
+        _history(),
         train_size=request.train_size,
         ticket_count=request.ticket_count,
         strategy=request.strategy,
