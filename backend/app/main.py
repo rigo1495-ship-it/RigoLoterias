@@ -1,4 +1,5 @@
 import logging
+from hmac import compare_digest
 from time import perf_counter
 from uuid import uuid4
 
@@ -42,6 +43,14 @@ async def security_headers(request: Request, call_next: RequestResponseEndpoint)
                 "X-Request-ID": request_id,
             },
         )
+    if request.method == "POST" and "/imports" in request.url.path:
+        configured_token = settings.write_api_token
+        supplied_token = request.headers.get("X-API-Key", "")
+        if configured_token is None:
+            if settings.environment == "production":
+                return JSONResponse(status_code=503, content={"detail": "Write access unavailable"})
+        elif not compare_digest(supplied_token, configured_token.get_secret_value()):
+            return JSONResponse(status_code=401, content={"detail": "Invalid write credentials"})
     started = perf_counter()
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"

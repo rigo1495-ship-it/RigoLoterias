@@ -2,7 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, field_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     trusted_hosts: tuple[str, ...] = ("127.0.0.1", "localhost", "testserver")
     rate_limit_requests: int = Field(default=120, ge=1, le=100_000)
     rate_limit_window_seconds: int = Field(default=60, ge=1, le=3_600)
+    write_api_token: SecretStr | None = None
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     @field_validator("cors_origins", mode="before")
@@ -39,6 +40,12 @@ class Settings(BaseSettings):
         if isinstance(value, (list, tuple)) and all(isinstance(host, str) for host in value):
             return tuple(value)
         raise ValueError("trusted_hosts must be a comma-separated string or a list of hosts")
+
+    @model_validator(mode="after")
+    def require_write_token_in_production(self) -> "Settings":
+        if self.environment == "production" and self.write_api_token is None:
+            raise ValueError("WRITE_API_TOKEN is required in production")
+        return self
 
 
 @lru_cache
