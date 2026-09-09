@@ -2,13 +2,17 @@ from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from starlette.middleware.base import RequestResponseEndpoint
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+from starlette.responses import JSONResponse
 
 from app.api.v1.router import router
 from app.core.config import get_settings
+from app.core.rate_limit import SlidingWindowRateLimiter
 
 settings = get_settings()
 app = FastAPI(title=settings.app_name, version="0.1.0")
 app.add_middleware(GZipMiddleware, minimum_size=500)
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(settings.trusted_hosts))
 app.add_middleware(
     CORSMiddleware,
     allow_origins=list(settings.cors_origins),
@@ -16,10 +20,18 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type"],
 )
+limiter = SlidingWindowRateLimiter(settings.rate_limit_requests, settings.rate_limit_window_seconds)
 
 
 @app.middleware("http")
 async def security_headers(request: Request, call_next: RequestResponseEndpoint) -> Response:
+    client_key = request.client.host if request.client is not None else "unknown"
+    if not limiter.allow(client_key):
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "Rate limit exceeded. Retry later."},
+            headers={"Retry-After": str(settings.rate_limit_window_seconds)},
+        )
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"

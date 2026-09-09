@@ -1,10 +1,13 @@
 from fastapi import APIRouter, HTTPException
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.api.v1.combination import router as combination_router
 from app.api.v1.gana_gato import router as gana_gato_router
 from app.api.v1.pool import router as pool_router
 from app.api.v1.protouch import router as protouch_router
 from app.api.v1.tris import router as tris_router
+from app.db.session import build_engine
 from app.domain.games import Capability
 from app.games import registry
 from app.schemas.games import CapabilityErrorResponse, GameResponse
@@ -20,6 +23,16 @@ router.include_router(combination_router)
 @router.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok", "service": "RigoLoterias"}
+
+
+@router.get("/ready")
+def ready() -> dict[str, str]:
+    try:
+        with build_engine().connect() as connection:
+            connection.execute(text("SELECT 1"))
+    except SQLAlchemyError as exc:
+        raise HTTPException(503, "Database is not ready") from exc
+    return {"status": "ready", "service": "RigoLoterias"}
 
 
 @router.get("/games", response_model=list[GameResponse])

@@ -13,6 +13,12 @@ def test_health() -> None:
     assert response.headers["x-frame-options"] == "DENY"
 
 
+def test_readiness_checks_database() -> None:
+    response = client.get("/api/v1/ready")
+    assert response.status_code == 200
+    assert response.json()["status"] == "ready"
+
+
 def test_cors_allows_configured_local_frontend() -> None:
     response = client.options(
         "/api/v1/health",
