@@ -1,0 +1,51 @@
+services:
+  - type: web
+    name: rigoloterias-api
+    runtime: python
+    plan: 0.5c-512mb
+    region: oregon
+    rootDir: backend
+    buildCommand: pip install .
+    preDeployCommand: alembic upgrade head
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/ready
+    maxShutdownDelaySeconds: 30
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: rigoloterias-db
+          property: connectionString
+      - key: WRITE_API_TOKEN
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false
+      - key: TRUSTED_HOSTS
+        sync: false
+      - key: RATE_LIMIT_REQUESTS
+        value: "120"
+      - key: RATE_LIMIT_WINDOW_SECONDS
+        value: "60"
+
+  - type: web
+    name: rigoloterias-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
+
+databases:
+  - name: rigoloterias-db
+    plan: 0.5c-1g
+    region: oregon
+    postgresMajorVersion: "16"
+    databaseName: rigoloterias
+    user: rigoloterias

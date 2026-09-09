@@ -78,3 +78,7 @@ alembic downgrade base
 ```
 
 Never aim `DATABASE_URL` at a source project's database.
+
+## Deployment
+
+Phase J1 provides a Render Blueprint in `render.yaml`. Follow [the Render deployment guide](docs/deployment/render-j1.md); it deliberately prompts for public origins and hosts rather than storing them in Git.
