@@ -14,4 +14,6 @@ The API sends `nosniff`, frame-denial, no-referrer and same-site resource header
 
 `/api/v1/health` is a liveness probe; `/api/v1/ready` checks database connectivity and returns 503 on failure. The process-local sliding-window limiter uses the direct socket peer only, never client-supplied forwarding headers. Configure `RATE_LIMIT_REQUESTS` and `RATE_LIMIT_WINDOW_SECONDS` to the traffic budget. For multiple API instances, enforce the same policy at the load balancer/API gateway; the local limiter is intentionally a second line of defence, not distributed state.
 
+Every response receives an opaque `X-Request-ID`; request logs contain that identifier, method, path, status and duration, never request bodies or query strings. Unexpected server failures are logged with the same identifier and return a generic 500 response without exception details.
+
 Authentication, user accounts, payments and rate limiting are intentionally not implemented because the platform has no corresponding product flow. Add them only with a concrete authorization and threat model.

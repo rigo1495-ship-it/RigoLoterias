@@ -11,6 +11,8 @@ def test_health() -> None:
     assert response.json()["status"] == "ok"
     assert response.headers["x-content-type-options"] == "nosniff"
     assert response.headers["x-frame-options"] == "DENY"
+    assert len(response.headers["x-request-id"]) == 32
+    assert float(response.headers["x-process-time-ms"]) >= 0
 
 
 def test_readiness_checks_database() -> None:
