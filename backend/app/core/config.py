@@ -21,7 +21,9 @@ class Settings(BaseSettings):
     rate_limit_requests: int = Field(default=120, ge=1, le=100_000)
     rate_limit_window_seconds: int = Field(default=60, ge=1, le=3_600)
     write_api_token: SecretStr | None = None
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    # Comma-separated deployment variables are parsed by the validators below.
+    # Disable Pydantic's JSON-first decoding so Render values reach them intact.
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore", enable_decoding=False)
 
     @field_validator("cors_origins", mode="before")
     @classmethod
