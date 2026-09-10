@@ -6,10 +6,10 @@ services:
     region: oregon
     rootDir: backend
     buildCommand: pip install .
-    preDeployCommand: alembic upgrade head
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    # Free services do not support preDeployCommand; run the idempotent migration
+    # immediately before starting this single-instance staging API.
+    startCommand: alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/v1/ready
-    maxShutdownDelaySeconds: 30
     envVars:
       - key: ENVIRONMENT
         value: production
