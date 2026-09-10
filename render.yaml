@@ -2,7 +2,7 @@ services:
   - type: web
     name: rigoloterias-api
     runtime: python
-    plan: 0.5c-512mb
+    plan: free
     region: oregon
     rootDir: backend
     buildCommand: pip install .
@@ -44,7 +44,7 @@ services:
 
 databases:
   - name: rigoloterias-db
-    plan: 0.5c-1g
+    plan: free
     region: oregon
     postgresMajorVersion: "16"
     databaseName: rigoloterias
